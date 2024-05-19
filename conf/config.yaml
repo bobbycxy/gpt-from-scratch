@@ -4,7 +4,7 @@ defaults:
   - _self_
 
 # input:
-train_file        : 'input.txt'  # training data
+train_file        : 'data/input.txt'  # training data
 batch_size        : 64      # B
 block_size        : 128     # T
 n_embed           : 64      # C
@@ -26,3 +26,7 @@ dropout           : 0.1     # dropout rate
 optimizer         : 'adam'  # optimizer name
 train_size        : 0.9     # training data size
 # scheduler         : 'linear'
+
+# masked_lm:
+masked_lm         : False    # whether to use masked language model
+mask_prob         : 0.15    # mask probability
