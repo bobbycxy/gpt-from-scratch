@@ -9,9 +9,9 @@ from torch.functional import F
 from model.layers.attention import Head
 
 class MultiHeadAttention(nn.Module):
-    def __init__(self, head_size, num_heads, n_embed, block_size, dropout):
+    def __init__(self, head_size, num_heads, n_embed, block_size, dropout, is_causal):
         super().__init__()
-        self.heads = nn.ModuleList([Head(head_size, n_embed, block_size, dropout) for _ in range(num_heads)])
+        self.heads = nn.ModuleList([Head(head_size, n_embed, block_size, dropout, is_causal) for _ in range(num_heads)])
         self.linear = nn.Linear(head_size*num_heads, n_embed) # projection layer going back into the pathway
         self.dropout = nn.Dropout(dropout)
 

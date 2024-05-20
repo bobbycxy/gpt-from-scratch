@@ -8,6 +8,7 @@ train_file        : 'data/input.txt'  # training data
 batch_size        : 64      # B
 block_size        : 128     # T
 n_embed           : 64      # C
+vocab_size        : ???      # V
 
 # attn:
 num_heads         : 8       # H
@@ -29,4 +30,5 @@ train_size        : 0.9     # training data size
 
 # masked_lm:
 masked_lm         : False    # whether to use masked language model
-mask_prob         : 0.15    # mask probability
+is_causal         : True    # whether to use causal mask
+mlm_prob          : 0.15    # mask probability
