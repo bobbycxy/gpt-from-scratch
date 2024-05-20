@@ -1,3 +1,2 @@
 name              : 'character'
 vocab_file        : 'data/input.txt'
-vocab_size        : 65   # V

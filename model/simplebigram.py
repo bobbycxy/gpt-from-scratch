@@ -9,7 +9,7 @@ from torch.functional import F
 class SimpleBigram(nn.Module):
     def __init__(self, cfg):
         super().__init__()
-        self.vocab_size = cfg['tokenizer']['vocab_size']
+        self.vocab_size = cfg['vocab_size']
         self.embedding_table = nn.Embedding(self.vocab_size, self.vocab_size)
 
     def forward(self, x, targets = None):
