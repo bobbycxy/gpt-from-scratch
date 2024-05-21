@@ -1,0 +1,4 @@
+# causal language model is a language model that only uses the left context to predict the next token.
+name              : 'causal' # name of the configuration
+masked_lm         : False   # Do not use masked language model
+is_causal         : True    # causal attention

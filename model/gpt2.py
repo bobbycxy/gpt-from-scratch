@@ -19,7 +19,7 @@ class GPT2(nn.Module):
         self.n_embed = cfg['n_embed']
         self.block_size = cfg['block_size']
         self.dropout = cfg['dropout']
-        self.is_causal = cfg['is_causal']
+        self.is_causal = cfg['languagemodel']['is_causal']
 
         self.embedding_table = nn.Embedding(self.vocab_size, self.n_embed)
         self.position_embedding_table = nn.Embedding(self.block_size, self.n_embed)

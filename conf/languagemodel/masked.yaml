@@ -1,0 +1,5 @@
+# msked language model uses a bidirectional attention mechanism to predict masked tokens
+name              : 'masked' # name of the configuration
+masked_lm         : True    # use masked language model
+is_causal         : False   # bidirectional attention
+mlm_prob          : 0.15    # mask probability

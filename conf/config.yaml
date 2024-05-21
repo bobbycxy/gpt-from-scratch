@@ -1,14 +1,16 @@
 defaults:
-  - model: 'gpt2'
-  - tokenizer: 'character'
-  - _self_
+  - languagemodel: ??? # language model name
+  - model: 'gpt2' # model name
+  - tokenizer: 'characternew' # tokenizer name
+  - _self_ # self reference
 
 # input:
 train_file        : 'data/input.txt'  # training data
+train_size        : 0.9     # training data size
 batch_size        : 64      # B
 block_size        : 128     # T
 n_embed           : 64      # C
-vocab_size        : ???      # V
+vocab_size        : ???     # V # assigned by tokenizer upon loading dataloader object
 
 # attn:
 num_heads         : 8       # H
@@ -24,11 +26,5 @@ learning_rate     : 0.001  # learning rate
 dropout           : 0.1     # dropout rate
 
 # registry:
-optimizer         : 'adam'  # optimizer name
-train_size        : 0.9     # training data size
+# optimizer         : 'adam'  # optimizer name 
 # scheduler         : 'linear'
-
-# masked_lm:
-masked_lm         : False    # whether to use masked language model
-is_causal         : True    # whether to use causal mask
-mlm_prob          : 0.15    # mask probability
