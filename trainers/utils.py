@@ -19,7 +19,7 @@ def estimate_loss(model, data_loader, eval_iters):
     return out
 
 
-def masked_lm(input_ids, tokenizer, mlm_prob = 0.15):
+def masked_lm(input_ids, tokenizer, mlm_prob):
     '''
     Masked language model
     '''
