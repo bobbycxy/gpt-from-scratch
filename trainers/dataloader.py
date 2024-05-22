@@ -25,9 +25,9 @@ class DataLoader:
         self.tokenizer = tokenizer_dict.get(cfg['tokenizer']['name'])(cfg)
         self.data = torch.tensor(self.tokenizer.encode(self.text), dtype=torch.long)
 
-        n = int(cfg['train_size']*len(self.data))
         train_val = int(0.9*len(self.data)) ## 90% train and val, 10% test
-        self.train_data, self.val_data, self.test_data = self.data[:n*train_val], self.data[n*train_val:train_val], self.data[train_val:]
+        n = int(cfg['train_size']*train_val)
+        self.train_data, self.val_data, self.test_data = self.data[:n], self.data[n:train_val], self.data[train_val:]
 
     def load(self, split):
         data_dict = {

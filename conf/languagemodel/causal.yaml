@@ -2,3 +2,4 @@
 name              : 'causal' # name of the configuration
 masked_lm         : False   # Do not use masked language model
 is_causal         : True    # causal attention
+model_ckpt        : 'model/checkpoints/causal_model_checkpoint.pth' # model checkpoint

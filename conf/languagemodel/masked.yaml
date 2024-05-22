@@ -3,3 +3,4 @@ name              : 'masked' # name of the configuration
 masked_lm         : True    # use masked language model
 is_causal         : False   # bidirectional attention
 mlm_prob          : 0.15    # mask probability
+model_ckpt        : 'model/checkpoints/masked_model_checkpoint.pth' # model checkpoint

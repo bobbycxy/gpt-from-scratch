@@ -8,6 +8,8 @@ from trainers.dataloader import DataLoader
 from trainers.utils import estimate_loss
 from model import GPT2, SimpleBigram
 
+from utils import save_checkpoint, load_checkpoint, ensure_dir
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 @hydra.main(version_base=None, config_path='conf', config_name='config')
@@ -15,6 +17,7 @@ def main(cfg):
     
     ## dataloader
     data_loader = DataLoader(cfg = cfg)
+    cfg['vocab_size'] = data_loader.tokenizer.vocab_size
     
     model_dict = {
         'simplebigram': SimpleBigram,
@@ -26,6 +29,12 @@ def main(cfg):
     ## optimizer
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
 
+    ## ensure checkpoint directory
+    checkpoint_dir = 'model/checkpoints'
+    ensure_dir(checkpoint_dir)
+    best_val_loss = float('inf')
+    checkpoint_path = f'{checkpoint_dir}/{cfg.languagemodel.name}_model_checkpoint.pth'
+
     ## train
     for iter in range(cfg.max_iters):
         
@@ -34,6 +43,10 @@ def main(cfg):
                                    data_loader=data_loader,
                                    eval_iters=cfg.eval_iters)
             print(f'Iter {iter}, Train loss: {losses["train"]}, Val loss: {losses["val"]}')
+
+            if losses['val'] < best_val_loss:
+                best_val_loss = losses['val']
+                save_checkpoint(model, optimizer, iter, best_val_loss, checkpoint_path)
         
         xb, yb = data_loader.load('train')
 
