@@ -28,3 +28,7 @@ dropout           : 0.1     # dropout rate
 # registry:
 # optimizer         : 'adam'  # optimizer name 
 # scheduler         : 'linear'
+
+# wandb:
+wandb_log         : False   # use wandb
+wandb_project     : 'smallville'  # wandb project name

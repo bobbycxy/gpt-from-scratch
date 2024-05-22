@@ -35,6 +35,11 @@ def main(cfg):
     best_val_loss = float('inf')
     checkpoint_path = f'{checkpoint_dir}/{cfg.languagemodel.name}_model_checkpoint.pth'
 
+    ## wandb
+    if cfg.wandb_log:
+        from utils import init_wandb
+        init_wandb(cfg, model)
+
     ## train
     for iter in range(cfg.max_iters):
         
@@ -44,6 +49,12 @@ def main(cfg):
                                    eval_iters=cfg.eval_iters)
             print(f'Iter {iter}, Train loss: {losses["train"]}, Val loss: {losses["val"]}')
 
+            ## wandb
+            if cfg.wandb_log:
+                from utils import log_wandb
+                log_wandb(losses)
+
+            ## Save the model checkpoint if the validation loss is the best we have seen so far
             if losses['val'] < best_val_loss:
                 best_val_loss = losses['val']
                 save_checkpoint(model, optimizer, iter, best_val_loss, checkpoint_path)
