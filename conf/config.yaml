@@ -26,6 +26,8 @@ learning_rate     : 0.001  # learning rate
 dropout           : 0.1     # dropout rate
 
 # registry:
+model_ckpt_dir    : 'model/checkpoints' # model checkpoint directory        
+model_ckpt        : '${languagemodel.name}_${tokenizer.name}_model_checkpoint.pth' # model checkpoint
 # optimizer         : 'adam'  # optimizer name 
 # scheduler         : 'linear'
 

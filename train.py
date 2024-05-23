@@ -30,10 +30,9 @@ def main(cfg):
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
 
     ## ensure checkpoint directory
-    checkpoint_dir = 'model/checkpoints'
-    ensure_dir(checkpoint_dir)
+    ensure_dir(cfg.model_ckpt_dir)
     best_val_loss = float('inf')
-    checkpoint_path = f'{checkpoint_dir}/{cfg.languagemodel.name}_model_checkpoint.pth'
+    checkpoint_path = f'{cfg.model_ckpt_dir}/{cfg.model_ckpt}'
 
     ## wandb
     if cfg.wandb_log:
