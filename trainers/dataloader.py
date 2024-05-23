@@ -3,7 +3,7 @@ Create a data loader for the model
 '''
 
 import torch
-from tokenizer import character, simplebpe, characternew
+from tokenizer import *
 from trainers.utils import masked_lm
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -11,7 +11,8 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 tokenizer_dict = {
     'character': character,
     'simplebpe': simplebpe,
-    'characternew': characternew
+    'characternew': characternew,
+    'simplebpenew': simplebpenew
 }
 
 class DataLoader:

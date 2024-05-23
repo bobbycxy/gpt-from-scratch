@@ -4,9 +4,10 @@ A script for running inference on a trained model.
 
 import torch
 from torch.functional import F
-from tokenizer import character, simplebpe, characternew
+from tokenizer import *
 from model import GPT2, simplebigram
-from utils import load_checkpoint
+from utils import load_checkpoint, ensure_dir
+
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -19,7 +20,8 @@ def load_model(cfg):
     tokenizer_dict = {
         'character': character,
         'simplebpe': simplebpe,
-        'characternew': characternew
+        'characternew': characternew,
+        'simplebpenew': simplebpenew
     }
     tokenizer = tokenizer_dict.get(cfg['tokenizer']['name'])(cfg)
     cfg['vocab_size'] = tokenizer.vocab_size
@@ -35,7 +37,9 @@ def load_model(cfg):
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
 
     ## load checkpoint
-    load_checkpoint(model, optimizer, cfg.languagemodel.model_ckpt)
+    ensure_dir(cfg.model_ckpt_dir)
+    checkpoint_path = f'{cfg.model_ckpt_dir}/{cfg.model_ckpt}'
+    load_checkpoint(model, optimizer, checkpoint_path)
 
     return tokenizer, model, optimizer
 
