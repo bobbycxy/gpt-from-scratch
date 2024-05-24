@@ -1,6 +1,23 @@
 '''
 Utility functions for the development of a tokenizer
 '''
+import os
+
+
+def get_tokenizer_file_directory():
+    '''
+    This function returns the directory of the tokenizer file.
+
+    Returns:
+    directory: string
+    '''
+    tokenizer_file_directory = os.path.join('tokenizer','tokenizer_models')
+    ## get absolute path
+    tokenizer_file_directory = os.path.abspath(tokenizer_file_directory)
+
+    return tokenizer_file_directory
+    
+
 
 def get_stats(ids):
     '''

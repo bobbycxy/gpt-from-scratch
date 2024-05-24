@@ -1,28 +1,26 @@
 import re
-from tokenizer.utils import get_stats, merge
+from tokenizer.utils import get_stats, merge, get_tokenizer_file_directory
 
 class simplebpenew:
     def __init__(self, cfg):
+        ## load the config
+        self.cfg = cfg
+
         # load the text file
         with open(cfg['tokenizer']['vocab_file'], 'r') as f:
             self.text = f.read()
 
-        # check special_tokens_dict
+        # create special_tokens_dict
         self.pad_token = b'<pad>'
         self.pad_token_id = 256
-
         self.unk_token = b'<unk>'
         self.unk_token_id = 257
-
         self.bos_token = b'<bos>'
         self.bos_token_id = 258
-
         self.eos_token = b'<eos>'
         self.eos_token_id = 259
-
         self.mask_token = b'<mask>'
         self.mask_token_id = 260
-        
         self.special_tokens_dict = {
             self.pad_token: self.pad_token_id,
             self.unk_token: self.unk_token_id,
@@ -36,14 +34,22 @@ class simplebpenew:
         self.vocab_offset = max(self.special_tokens_dict.values()) + 1
         self.vocab_size = cfg['tokenizer']['vocab_size']
 
+        ## build the tokenizer
+        self._build()
+    
+    def _train(self):
+
         ## create the tokens
         self.tokens = self.text.encode("utf-8") # encode the text as raw bytes. This will be a list of integers in range 0..255
         self.tokens = list(map(int, self.tokens)) # convert to a list of integers for convenience
 
-        ## calculate the number of merges
+        ## calculate the number of merges needed from the ideal vocab size, to the vocab offset (because special tokens are already in the vocab)
         self.num_merges = self.vocab_size - self.vocab_offset
-        self.ids = list(self.tokens) # copy the tokens so that we don't destroy the original list
 
+        ## copy the tokens so that we don't destroy the original list
+        self.ids = list(self.tokens) 
+
+        ## create the merges
         self.merges = {}
         for i in range(self.num_merges):
             stats = get_stats(self.ids)
@@ -59,7 +65,63 @@ class simplebpenew:
         for (p0, p1), idx in self.merges.items(): # add the merged tokens
             self.vocab[idx] = self.vocab[p0] + self.vocab[p1]
 
+    def _save(self):
+        '''
+        Save the vocab and merges to a file.
+        '''
+        import json
+        import base64
+        import os
 
+        tokenizer_file_directory = get_tokenizer_file_directory()
+
+        ## save the vocab
+        encoded_vocab = {k: base64.b64encode(v).decode('utf-8') for k, v in self.vocab.items()}
+        with open(os.path.join(tokenizer_file_directory, self.cfg.tokenizer.name, 'vocab.json'), 'w') as f:
+            json.dump(encoded_vocab, f, ensure_ascii=False, indent=4)
+        
+        ## save the merges
+        # Convert tuple keys to strings for JSON compatibility
+        merges_str_keys = {str(k): v for k, v in self.merges.items()}
+        with open(os.path.join(tokenizer_file_directory, self.cfg.tokenizer.name, 'merges.json'), 'w') as f:
+            json.dump(merges_str_keys, f, ensure_ascii=False, indent=4)
+
+    def _load(self):
+        '''
+        Load the vocab and merges from a file.
+        '''
+        import json
+        import base64
+        import os
+
+        tokenizer_file_directory = get_tokenizer_file_directory()
+
+        ## load the vocab
+        with open(os.path.join(tokenizer_file_directory, self.cfg.tokenizer.name, 'vocab.json'), 'r') as f:
+            encoded_vocab = json.load(f)
+        self.vocab = {int(k): base64.b64decode(v.encode('utf-8')) for k, v in encoded_vocab.items()}
+        
+        ## load the merges
+        with open(os.path.join(tokenizer_file_directory, self.cfg.tokenizer.name, 'merges.json'), 'r') as f:
+            merges_str_keys = json.load(f)
+        # Convert string keys back to tuples
+        self.merges = {eval(k): v for k, v in merges_str_keys.items()}
+        
+    def _build(self):
+        import os
+        if os.path.exists(os.path.join(get_tokenizer_file_directory(), self.cfg.tokenizer.name, 'vocab.json')) and os.path.exists(os.path.join(get_tokenizer_file_directory(), self.cfg.tokenizer.name, 'merges.json')):
+            print('Loading tokenizer from file')
+            self._load()
+
+            if len(self.vocab) != self.vocab_size:
+                print('Vocab size mismatch... Training tokenizer')
+                self._train()
+                self._save()
+            
+        else:
+            print('Training tokenizer')
+            self._train()
+            self._save()
 
     def pre_tokenize(self, given_text):
         # Convert text to bytes
