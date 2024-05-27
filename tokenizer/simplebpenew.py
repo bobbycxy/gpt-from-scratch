@@ -77,6 +77,7 @@ class simplebpenew:
 
         ## save the vocab
         encoded_vocab = {k: base64.b64encode(v).decode('utf-8') for k, v in self.vocab.items()}
+        os.makedirs(os.path.join(tokenizer_file_directory, self.cfg.tokenizer.name), exist_ok = True)
         with open(os.path.join(tokenizer_file_directory, self.cfg.tokenizer.name, 'vocab.json'), 'w') as f:
             json.dump(encoded_vocab, f, ensure_ascii=False, indent=4)
         
