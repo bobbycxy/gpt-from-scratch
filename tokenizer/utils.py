@@ -19,7 +19,7 @@ def get_tokenizer_file_directory():
     
 
 
-def get_stats(ids):
+def get_stats(ids, counts = None):
     '''
     Given an input list of ids, this function will return a dictionary
     with the counts of each pair of ids.
@@ -30,7 +30,7 @@ def get_stats(ids):
     Returns:
     counts: dictionary of pairs of integers and their counts
     '''
-    counts = {}
+    counts = {} if counts is None else counts
     for pair in zip(ids, ids[1:]):
         if pair not in counts:
             counts[pair] = 0
