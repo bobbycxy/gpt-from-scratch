@@ -1,0 +1,3 @@
+name              : 'bpe'  # tokenizer name
+vocab_file        : 'data/input.txt'  # vocabulary file
+vocab_size        : 2048   # V

@@ -12,7 +12,8 @@ tokenizer_dict = {
     'character': character,
     'simplebpe': simplebpe,
     'characternew': characternew,
-    'simplebpenew': simplebpenew
+    'simplebpenew': simplebpenew,
+    'bpe': bpe
 }
 
 class DataLoader:

@@ -21,7 +21,8 @@ def load_model(cfg):
         'character': character,
         'simplebpe': simplebpe,
         'characternew': characternew,
-        'simplebpenew': simplebpenew
+        'simplebpenew': simplebpenew,
+        'bpe': bpe
     }
     tokenizer = tokenizer_dict.get(cfg['tokenizer']['name'])(cfg)
     cfg['vocab_size'] = tokenizer.vocab_size
