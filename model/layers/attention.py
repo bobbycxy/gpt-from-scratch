@@ -7,7 +7,7 @@ import torch.nn as nn
 from torch.functional import F
 
 class Head(nn.Module):
-    def __init__(self, head_size, n_embed, block_size, dropout, is_causal):
+    def __init__(self, head_size, n_embed, block_size, is_causal):
         super().__init__()
         self.head_size = head_size
         self.q = nn.Linear(n_embed, head_size)
@@ -17,7 +17,7 @@ class Head(nn.Module):
             self.register_buffer('triu', torch.triu(torch.ones(block_size, block_size), diagonal=1)) # If causal, then the upper half of the matrix is masked. This would be causal self-attention
         else:
             self.register_buffer('triu', torch.triu(torch.zeros(block_size, block_size), diagonal=1)) # if non-causal, then the whole matrix is not masked. This would be bidirectional self-attention
-        self.dropout = nn.Dropout(dropout)
+        self.dropout = nn.Dropout()
 
     def forward(self, x, mask=None):
         B,T,C = x.shape

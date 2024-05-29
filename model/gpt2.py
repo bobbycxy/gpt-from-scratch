@@ -18,12 +18,11 @@ class GPT2(nn.Module):
         self.num_heads = cfg['num_heads']
         self.n_embed = cfg['n_embed']
         self.block_size = cfg['block_size']
-        self.dropout = cfg['dropout']
         self.is_causal = cfg['languagemodel']['is_causal']
 
         self.embedding_table = nn.Embedding(self.vocab_size, self.n_embed)
         self.position_embedding_table = nn.Embedding(self.block_size, self.n_embed)
-        self.blocks = nn.Sequential(*[Block(self.num_heads, self.n_embed, self.block_size, self.dropout, self.is_causal) for _ in range(self.num_layers)])
+        self.blocks = nn.Sequential(*[Block(self.num_heads, self.n_embed, self.block_size, self.is_causal) for _ in range(self.num_layers)])
         self.ln_final = nn.LayerNorm(self.n_embed)
         self.lm_head = nn.Linear(self.n_embed, self.vocab_size)
 

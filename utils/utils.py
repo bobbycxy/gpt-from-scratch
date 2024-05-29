@@ -52,13 +52,13 @@ def init_wandb(cfg, model):
     '''
     import wandb
     from omegaconf import OmegaConf
-    run_name = generate_run_name(cfg.languagemodel.name, cfg.model.name, cfg.train_file, cfg.tokenizer.name, cfg.learning_rate, cfg.batch_size, cfg.max_iters)
+    run_name = generate_run_name(cfg.languagemodel.name, cfg.model.name, cfg.train_file, cfg.tokenizer.name, cfg.lr_scheduler.name, cfg.batch_size, cfg.max_iters)
     wandb.init(project=cfg.wandb_project, name=run_name, config = OmegaConf.to_container(cfg))
     wandb.watch(model)
 
-def log_wandb(losses):
+def log_wandb(logs):
     '''
     Log the losses to wandb
     '''
     import wandb
-    wandb.log({'train_loss': losses['train'], 'val_loss': losses['val']})
+    wandb.log(logs)
