@@ -16,11 +16,17 @@ In my third phase, I implemented masked language modelling (MLM) with the GPT2 d
 
 In my fourth phase, and as a follow up from the poor results of the MLM with simplebpenew, I made the tokenizer more optimal by factoring in the use of regex to first chunk up the input text to ensure that byte pairs do not overrun into the next words, before running the BPE algorithm. This is to address the likely suboptimal token pairs that Radford et al (2019) cautions of. This did lead to better loss values when the same parameters were applied. However, the BPE was still underperforming. So, I’ll have to deep dive on this issue.
 
+In my fifth phase, I implemented a dropout and learning rate scheduler. Using pytorch's CosineAnnealingLR, I refactored the code to be implemented with my LM.
+
+In my sixth phase, I implemented Rotational Positional Encoding. Understanding the math was quite challenging. Being bias for action, I copied the implementation of LLama's RoPE (precompute_freqs_cis(), reshape_for_broadcast(), apply_rotary_emb()), albeit with a tweak to suit the 3D dimension of the input and attention matrices. At the same time, to validate that it works, I did up a jupyter notebook to visualise how it works. 
+
 ### Next steps
 
 - Deep dive on the poor results for MLM when using BPE tokenizer
 - Adjust the ADAM optimizer function to one that uses weight decay for regularization.
 - Create an FFN with SwiGLU (as used in Llama)
+- Implement KV-Caching
+- Implement Masked Next Token Prediction
 
 ### **References**
 
@@ -39,3 +45,11 @@ In my fourth phase, and as a follow up from the poor results of the MLM with sim
 [7] Masked language modeling. (n.d.). https://huggingface.co/docs/transformers/main/en/tasks/masked_language_modeling
 
 [8] Shreya, G. (2024, April 18). Comprehensive Guide to BERT. Analytics Vidhya. https://www.analyticsvidhya.com/blog/2022/11/comprehensive-guide-to-bert/
+
+[9] Tam, A. (2023). Using Learning Rate Schedule in PyTorch Training. Retrieved from https://machinelearningmastery.com/using-learning-rate-schedule-in-pytorch-training/
+
+[10] Touvron, H., Martin, L., Stone, K., Albert, P., Almahairi, A., Babaei, Y., Bashlykov, N., Batra, S., Bhargava, P., Bhosale, S., Bikel, D., Blecher, L., Ferrer, C. C., Chen, M., Cucurull, G., Esiobu, D., Fernandes, J., Fu, J., Fu, W., . . . Scialom, T. (2023, July 18). Llama 2: Open foundation and Fine-Tuned chat models. arXiv.org. https://arxiv.org/abs/2307.09288
+
+[11] Tam, A. S. (2023). Reading the LLaMA code. Retrieved from https://www.adrian.idv.hk/2023-10-30-llama2/
+
+[12] Su, J., Lu, Y., Pan, S., Murtadha, A., Wen, B., & Liu, Y. (2021, April 20). RoFormer: Enhanced Transformer with Rotary Position Embedding. arXiv.org. https://arxiv.org/abs/2104.09864

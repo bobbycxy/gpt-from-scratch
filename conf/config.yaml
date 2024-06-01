@@ -11,6 +11,7 @@ batch_size        : 64      # B
 block_size        : 128     # T
 n_embed           : 64      # C
 vocab_size        : ???     # V # assigned by tokenizer upon loading dataloader object
+use_rope          : True    # Rotational Positional Encoding (RoPE)
 
 # attn:
 num_heads         : 8       # H

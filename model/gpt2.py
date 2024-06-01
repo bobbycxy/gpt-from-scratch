@@ -19,18 +19,22 @@ class GPT2(nn.Module):
         self.n_embed = cfg['n_embed']
         self.block_size = cfg['block_size']
         self.is_causal = cfg['languagemodel']['is_causal']
+        self.use_rope = cfg['use_rope']
 
         self.embedding_table = nn.Embedding(self.vocab_size, self.n_embed)
         self.position_embedding_table = nn.Embedding(self.block_size, self.n_embed)
-        self.blocks = nn.Sequential(*[Block(self.num_heads, self.n_embed, self.block_size, self.is_causal) for _ in range(self.num_layers)])
+        self.blocks = nn.Sequential(*[Block(self.num_heads, self.n_embed, self.block_size, self.is_causal, self.use_rope) for _ in range(self.num_layers)])
         self.ln_final = nn.LayerNorm(self.n_embed)
         self.lm_head = nn.Linear(self.n_embed, self.vocab_size)
 
     def forward(self, idx, targets = None):
         B,T = idx.shape
         tok_emb = self.embedding_table(idx)
-        pos_emb = self.position_embedding_table(torch.arange(T).to(device))
-        x = tok_emb + pos_emb
+        x = tok_emb
+        ## If we are not using the rope embeddings
+        if not self.use_rope:
+            pos_emb = self.position_embedding_table(torch.arange(T).to(device))
+            x = x + pos_emb
         x = self.blocks(x)
         x = self.ln_final(x)
         logits = self.lm_head(x)
