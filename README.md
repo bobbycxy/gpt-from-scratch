@@ -25,7 +25,6 @@ In my seventh phase, I rewrote the optimizer function to apply regularization ar
 ### Next steps
 
 - Deep dive on the poor results for MLM when using BPE tokenizer
-- Adjust the ADAM optimizer function to one that uses weight decay for regularization.
 - Create an FFN with SwiGLU (as used in Llama)
 - Implement KV-Caching
 - Implement Masked Next Token Prediction
