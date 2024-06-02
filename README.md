@@ -20,6 +20,8 @@ In my fifth phase, I implemented a dropout and learning rate scheduler. Using py
 
 In my sixth phase, I implemented Rotational Positional Encoding. Understanding the math was quite challenging. Being bias for action, I copied the implementation of LLama's RoPE (precompute_freqs_cis(), reshape_for_broadcast(), apply_rotary_emb()), albeit with a tweak to suit the 3D dimension of the input and attention matrices. At the same time, to validate that it works, I did up a jupyter notebook to visualise how it works. 
 
+In my seventh phase, I rewrote the optimizer function to apply regularization arguments like weight decay to specific layers of the model. Namely, layeres that tend to have weights updated during training, and which have at least 2 dimensions. That's because trainable layers with 1 dimension tend to be biases, and trainable layers with least 2 dimensions tend to be fully connected layers. Why is that the case? Overfitting usually happens in the weight matrices. The bias, however, do not contribute to the curvature of the model so there is usually little point in regularising them. This is something which Andrew Ng teaches - _"Usually weight decay is not applied to the bias terms... Applying weight decay to the bias units usually makes only a small different to the final network, however"_.
+
 ### Next steps
 
 - Deep dive on the poor results for MLM when using BPE tokenizer
