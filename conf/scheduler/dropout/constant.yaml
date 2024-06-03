@@ -1,0 +1,2 @@
+name            : 'constant' # dropout rate scheduler type
+initial_dropout : 0.1     # initial dropout rate

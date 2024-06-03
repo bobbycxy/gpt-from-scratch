@@ -9,10 +9,10 @@ import hydra
 
 from trainers.dataloader import DataLoader
 from trainers.utils import estimate_loss
-from model import GPT2, SimpleBigram
+from model import GPT2, SimpleBigram, build_optimizer
 
 from utils import save_checkpoint, load_checkpoint, ensure_dir
-from trainers.scheduler import *
+from trainers.utils import build_dropout_scheduler, build_lr_scheduler
 import numpy as np
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -32,39 +32,14 @@ def main(cfg):
     model = model_dict[cfg.model.name](cfg = cfg).to(device)
     
     ## optimizer
-    param_dict = {pn: p for pn, p in model.named_parameters()} ## get each layer of the model
-    param_dict = {pn: p for pn, p in param_dict.items() if p.requires_grad} ## get only the parameters that require gradients
-    decay_params = [p for n, p in param_dict.items() if p.dim() >= 2] ## get the parameters that have a dimension of 2 or more
-    no_decay_params = [p for n, p in param_dict.items() if p.dim() < 2] ## get the parameters that have a dimension of less than 2
-    optimizer_groups = [
-        {'params': decay_params, 'weight_decay': 0.0},
-        {'params': no_decay_params, 'weight_decay': 0.0}
-    ]
-    optimizer = torch.optim.Adam(optimizer_groups)#, betas = (0.9, 0.95))
-    # optimizer = torch.optim.Adam(model.parameters())
+    optimizer = build_optimizer(model, 0.0, (0.9,0.999))
 
     ## scheduler
     # learning rate
-    lr_scheduler_dict = {
-        'constant': (LRScheduler, (cfg.lr_scheduler.initial_lr,)),
-        'cosine': (CosineLRScheduler, (cfg.lr_scheduler.initial_lr, 
-                                       cfg.lr_scheduler.min_lr, 
-                                       cfg.lr_scheduler.total_steps, 
-                                       cfg.lr_scheduler.warmup_steps))
-    }
-    func, args = lr_scheduler_dict[cfg.lr_scheduler.name]
-    lr_scheduler = func(*args)
+    lr_scheduler = build_lr_scheduler(cfg)
 
     # dropout rate
-    dropout_scheduler_dict = {
-        'constant': (DropoutScheduler, (cfg.dropout_scheduler.initial_dropout,)),
-        'linear': (LinearDropoutScheduler, (cfg.dropout_scheduler.initial_dropout,
-                                           cfg.dropout_scheduler.final_dropout,
-                                           cfg.dropout_scheduler.total_steps))
-    }
-    func, args = dropout_scheduler_dict[cfg.dropout_scheduler.name]
-    dropout_scheduler = func(*args)
-
+    dropout_scheduler = build_dropout_scheduler(cfg)
 
     ## ensure checkpoint directory
     ensure_dir(cfg.model_ckpt_dir)

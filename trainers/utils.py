@@ -4,6 +4,8 @@ Helper functions for the trainers objects
 
 import torch
 
+from trainers.scheduler import *
+
 @torch.no_grad()
 def estimate_loss(model, data_loader, eval_iters):
     out = {}
@@ -72,3 +74,41 @@ def generate_random_token_ids(shape, vocab_size, special_tokens_dict):
         while random_token_ids.view(-1)[i].item() in invalid_ids: ## iteratively check if the token is in the invalid_ids
             random_token_ids.view(-1)[i] = torch.randint(0, vocab_size, (1,))
     return random_token_ids
+
+
+def build_lr_scheduler(cfg):
+    ## using lambda so that the function is not called until it is needed
+    lr_scheduler_dict = {
+        'constant': lambda cfg: LRScheduler(cfg.scheduler.learningrate.initial_lr),
+        'cosine': lambda cfg: CosineLRScheduler(
+            cfg.scheduler.learningrate.initial_lr,
+            cfg.scheduler.learningrate.min_lr,
+            cfg.scheduler.learningrate.total_steps,
+            cfg.scheduler.learningrate.warmup_steps
+        )
+    }
+
+    try:
+        lr_scheduler = lr_scheduler_dict[cfg.scheduler.learningrate.name](cfg)
+    except KeyError:
+        raise ValueError(f"Invalid LR scheduler name: {cfg.scheduler.learningrate.name}")
+    
+    return lr_scheduler
+
+def build_dropout_scheduler(cfg):
+    ## using lambda so that the function is not called until it is needed
+    dropout_scheduler_dict = {
+        'constant': lambda cfg: DropoutScheduler(cfg.scheduler.dropout.initial_dropout),
+        'linear': lambda cfg: LinearDropoutScheduler(
+            cfg.scheduler.dropout.initial_dropout,
+            cfg.scheduler.dropout.final_dropout,
+            cfg.scheduler.dropout.total_steps
+        )
+    }
+
+    try:
+        dropout_scheduler = dropout_scheduler_dict[cfg.scheduler.dropout.name](cfg)
+    except KeyError:
+        raise ValueError(f"Invalid Dropout scheduler name: {cfg.scheduler.dropout.name}")
+    
+    return dropout_scheduler

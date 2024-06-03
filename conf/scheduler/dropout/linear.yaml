@@ -1,0 +1,4 @@
+name            : 'linear' # dropout rate scheduler type
+initial_dropout : 0.1     # initial dropout rate
+final_dropout   : 0.3     # final dropout rate
+total_steps     : 3000    # total steps to decay dropout rate

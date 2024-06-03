@@ -1,0 +1,4 @@
+defaults:
+  - dropout: 'constant'
+  - learningrate: 'constant'
+  - _self_

@@ -2,6 +2,7 @@ defaults:
   - languagemodel: ??? # language model name
   - model: 'gpt2' # model name
   - tokenizer: 'characternew' # tokenizer name
+  - scheduler: 'default' # scheduler name
   - _self_ # self reference
 
 # input:
@@ -23,17 +24,6 @@ eval_interval     : 100     # interval to evaluate
 
 # train:
 max_iters         : 3000    # number of iterations to train
-lr_scheduler:
-  name            : 'cosine' # learning rate scheduler type
-  initial_lr      : 0.001   # initial learning rate
-  min_lr          : 0.00001  # final learning rate
-  total_steps     : ${max_iters}    # total steps to decay learning rate
-  warmup_steps    : 100     # warmup steps
-dropout_scheduler:
-  name            : 'constant' # dropout rate scheduler type
-  initial_dropout : 0.1     # initial dropout rate
-  final_dropout   : 0.3     # final dropout rate
-  total_steps     : ${max_iters}    # total steps to decay dropout rate
 
 # registry:
 model_ckpt_dir    : 'model/checkpoints' # model checkpoint directory        

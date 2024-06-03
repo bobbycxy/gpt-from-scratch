@@ -1,0 +1,5 @@
+name            : 'cosine' # learning rate scheduler type
+initial_lr      : 0.001   # initial learning rate
+min_lr          : 0.00001  # final learning rate
+total_steps     : 3000    # total steps to decay learning rate
+warmup_steps    : 100     # warmup steps
