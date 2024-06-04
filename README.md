@@ -22,6 +22,8 @@ In my sixth phase, I implemented Rotational Positional Encoding. Understanding t
 
 In my seventh phase, I rewrote the optimizer function to apply regularization arguments like weight decay to specific layers of the model. Namely, layeres that tend to have weights updated during training, and which have at least 2 dimensions. That's because trainable layers with 1 dimension tend to be biases, and trainable layers with least 2 dimensions tend to be fully connected layers. Why is that the case? Overfitting usually happens in the weight matrices. The bias, however, do not contribute to the curvature of the model so there is usually little point in regularising them. This is something which Andrew Ng teaches - _"Usually weight decay is not applied to the bias terms... Applying weight decay to the bias units usually makes only a small different to the final network, however"_.
 
+In my eighth phase, I implemented Distributed Data Parallel (DDP). I achieved this by writing a new Trainer class (housed in trainers/build_trainer.py), a train_new.py script and creating a CustomDataset class object. This is so that I can utilise PyTorch's DataLoader class, to which I can use PyTorch's DsitributedSampler for the DDP operation more easily. I think there might be more advanced methods within DDP such as Fault Tolerance and Multi Node Training, so it's still a space worth exploring. One of the reasons for using DDP is to help improve performances through multiple batches of data being process over multiple devices.
+
 ### Next steps
 
 - Deep dive on the poor results for MLM when using BPE tokenizer
@@ -54,3 +56,7 @@ In my seventh phase, I rewrote the optimizer function to apply regularization ar
 [11] Tam, A. S. (2023). Reading the LLaMA code. Retrieved from https://www.adrian.idv.hk/2023-10-30-llama2/
 
 [12] Su, J., Lu, Y., Pan, S., Murtadha, A., Wen, B., & Liu, Y. (2021, April 20). RoFormer: Enhanced Transformer with Rotary Position Embedding. arXiv.org. https://arxiv.org/abs/2104.09864
+
+[13] Multi GPU training with DDP — PyTorch Tutorials 2.3.0+cu121 documentation. (n.d.). PyTorch. Retrieved June 4, 2024, from https://pytorch.org/tutorials/beginner/ddp_series_multigpu.html
+
+[14] karpathy/nanoGPT: The simplest, fastest repository for training/finetuning medium-sized GPTs. (n.d.). GitHub. https://github.com/karpathy/nanoGPT/tree/master?tab=readme-ov-file
